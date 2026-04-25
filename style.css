@@ -1,0 +1,211 @@
+/* 1. GLOBAL SETTINGS */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+/* Apply to the home page only */
+/* 1. Standard State (White Crystal) */
+body:not(.clean-page) {
+    cursor: url('images/crystal_white.svg') 16 16, auto;
+}
+
+/* 2. Hover State (Blue Crystal) */
+/* This targets links, buttons, and navigation items */
+body:not(.clean-page) a:hover, 
+body:not(.clean-page) button:hover {
+    cursor: url('images/crystal_blue.svg') 16 16, pointer !important;
+}
+
+body { 
+    font-family: 'Montserrat', sans-serif; 
+    color: white; 
+    background-color: #2c3e50; /* Fallback color: Dark blue/purple */
+    overflow: hidden; /* Prevents scrollbars on the home page */
+}
+
+/* 2. HERO SECTION (FULL SCREEN) */
+/* 2.1. Ensure the hero section is a container */
+.hero-section {
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden; /* CRITICAL: keeps the zoom inside the screen */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 2.2. The moving background layer */
+.background-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Sits behind text */
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
+                url('images/home_pic.jpg') center/cover no-repeat;
+    
+    /* The Animation */
+    animation: slowZoom 20s infinite alternate ease-in-out;
+}
+
+@keyframes slowZoom {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.1); /* Subtle 10% zoom */
+    }
+}
+
+/* 2.3. Make sure text sits ON TOP of the animation */
+.center-content, .quote-container {
+    z-index: 2; /* Sits in front of background */
+    pointer-events: none; /* Allows clicks to pass through to links */
+}
+
+.nav-links a {
+    pointer-events: auto; /* Re-enables clicking for the actual links */
+}
+
+/* 3. CENTER CONTENT (NAME & NAV) */
+.center-content {
+    text-align: center;
+    z-index: 2;
+}
+
+.center-content h1 {
+    font-family: 'League Script', cursive;
+    font-size: 7rem; /* Slightly larger for that script feel */
+    font-weight: 400;
+    margin-bottom: 5px;
+    text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 80px; /* Increased space between the section names */
+    justify-content: center;
+    margin-top: 20px; /* Slightly more space below your name */
+    z-index: 2;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.8rem; /* Slightly smaller for a more refined look */
+    text-transform: uppercase;
+    letter-spacing: 5px; /* Increased slightly to match the wide gap */
+    transition: all 0.4s ease;
+    opacity: 0.8;
+}
+
+.nav-links a:hover {
+    opacity: 1;
+    letter-spacing: 8px; /* The letters spread out even more when you hover */
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+}
+
+/* 4. QUOTE (BOTTOM PLACEMENT) */
+.quote-container {
+    position: absolute;
+    bottom: 40px;      /* Distance from the bottom edge */
+    left: 50%;
+    transform: translateX(-50%); /* Centers it perfectly */
+    width: 80%;        /* Keeps it from hitting the screen edges */
+    max-width: 1000px;
+    text-align: center;
+}
+
+#random-quote {
+    font-family: 'Playfair Display', serif; /* Or Lora */
+    font-style: italic;
+    font-size: 0.95rem; /* Smaller, elegant size */
+    font-weight: 400;
+    color: #F2C1A3;    /* Your Soft Peach */
+    line-height: 1.2;
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+}
+
+#quote-author {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.65rem; /* Very small for the author */
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #FFFFFF;
+    opacity: 0.6;
+}
+
+/* */
+/* */
+/* */
+
+.weather-widget {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    
+    background: rgba(20, 20, 20, 0.4); /* Slightly darker for a "pro" look */
+    backdrop-filter: blur(8px);
+    padding: 10px 22px;
+    border-radius: 50px;
+    border: 1px solid rgba(242, 193, 163, 0.2);
+    
+    color: #F2C1A3;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    z-index: 1000;
+}
+
+#weather-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.weather-details {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-left: 1px solid rgba(242, 193, 163, 0.3);
+    padding-left: 18px;
+}
+
+#wind-dir {
+    display: inline-block;
+    transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth "spring" animation */
+    font-size: 0.7rem;
+}
+
+.weather-widget i {
+    /* This color is a blend of peach and soft violet */
+    color: #D1A7B9; 
+    
+    /* This adds a tiny 'bloom' effect like dawn light */
+    text-shadow: 0 0 8px rgba(209, 167, 185, 0.4); 
+    
+    font-size: 0.8rem;
+    transition: color 0.5s ease; /* Smooth transition if the color changes */
+}
+
+/* Make the wind arrow a slightly different tint to show it's "active" */
+#wind-dir {
+    color: #F2C1A3 !important; /* Keep the wind arrow in the stronger peach */
+}
+
+
+/* -------------------------------------------------------------- */
