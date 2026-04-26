@@ -23,11 +23,13 @@
     
 
     <div class="weather-details">
-    <span class="tooltip-target" data-tooltip="Temperature (2m)">
-        <i class="fa-solid fa-thermometer-half"></i> <span id="temp"></span>°C
-    </span>
 
-    <span class="tooltip-target" data-tooltip="Relative Humidity">
+    <span class="tooltip-target" data-tooltip="Temperature (2m)">
+    <i class="fa-solid fa-thermometer-half"></i> 
+    <span id="temp"></span><span id="temp-unit">°C</span>
+</span>
+
+    <span class="tooltip-target" data-tooltip="Relative Humidity (2m)">
         <i class="fa-solid fa-droplet"></i> <span id="humidity"></span>%
     </span>
 
@@ -74,172 +76,111 @@
   </section>
 
 <script>
-
-//
-//
-// show local weather
-//
-
-
-async function getWeather() {
-    // Default to Rio
-    let lat = -22.9068;
+    
+async function initWeather() {
+    let lat = -22.9068; // Default Rio
     let lon = -43.1729;
 
+    // 1. Kick off the weather immediately with defaults
+    runWeatherLogic(lat, lon);
+
+    // 2. Then try to get real location (Fast Mode)
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const userLat = position.coords.latitude;
                 const userLon = position.coords.longitude;
                 updateLocationName(userLat, userLon);
-                fetchOpenMeteo(userLat, userLon);
+                runWeatherLogic(userLat, userLon); // Refresh with real location
             },
-            () => {
-                document.getElementById('location').innerText = "Rio de Janeiro";
-                fetchOpenMeteo(lat, lon);
-            }
+            () => { /* Stay on Rio if denied */ },
+            { enableHighAccuracy: false, timeout: 5000 }
         );
-    } else {
-        document.getElementById('location').innerText = "Rio de Janeiro";
-        fetchOpenMeteo(lat, lon);
     }
 }
 
-// New function to get the City Name
-async function updateLocationName(lat, lon) {
-    try {
-        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
-        const data = await response.json();
-        // Fallback to city, then principalSubdivision (State), then "Unknown"
-        const cityName = data.city || data.locality || data.principalSubdivision || "Unknown Location";
-        document.getElementById('location').innerText = cityName;
-    } catch (err) {
-        console.error("Geocoding failed:", err);
-        document.getElementById('location').innerText = "Atmosphere";
-    }
-}
+async function runWeatherLogic(lat, lon) {
+    // --- STEP A: Fast Country Check (with 2-second 'kill switch') ---
+    const getCountry = async () => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 sec limit
+        try {
+            const res = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+            const data = await res.json();
+            return data.country_code === 'US';
+        } catch (e) { return false; } 
+    };
 
-async function fetchOpenMeteo(lat, lon) {
+    const isUS = await getCountry();
+
+    // --- STEP B: Fetch Weather ---
     try {
-        // We request 'hourly' precipitation probability
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,pressure_msl,wind_speed_10m,wind_direction_10m,weather_code&hourly=precipitation_probability&timezone=auto&forecast_days=1`;
-        
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m&hourly=precipitation_probability&timezone=auto`;
         const response = await fetch(url);
         const data = await response.json();
 
-        // 1. Get the current hour (0-23)
-        const currentHour = new Date().getHours();
-        
-        // 2. Extract the probability for THIS hour from the hourly array
-        const currentPrecipProb = data.hourly.precipitation_probability[currentHour];
+        // 1. Temperature
+        const tempC = data.current.temperature_2m;
+        const unit = isUS ? "°F" : "°C";
+        const displayTemp = isUS ? Math.round((tempC * 9/5) + 32) : Math.round(tempC);
 
-        updateDisplayMeteo(data, currentPrecipProb);
-    } catch (err) {
-        console.error("Fetch failed:", err);
-    }
+        // 2. Update UI
+        document.getElementById('temp').innerText = displayTemp;
+        document.getElementById('temp-unit').innerText = unit;
+        document.getElementById('humidity').innerText = data.current.relative_humidity_2m;
+        document.getElementById('pressure').innerText = Math.round(data.current.pressure_msl);
+        document.getElementById('wind-speed').innerText = data.current.wind_speed_10m;
+        
+        const hour = new Date().getHours();
+        document.getElementById('precip-prob').innerText = data.hourly.precipitation_probability[hour] || 0;
+
+        // 3. Rotation & Icons
+        document.getElementById('wind-dir').style.transform = `rotate(${data.current.wind_direction_10m + 135}deg)`;
+        updateWeatherIcon(data.current.weather_code);
+
+    } catch (error) { console.error("Weather failed:", error); }
 }
 
-function updateDisplayMeteo(data, precipProb) {
-    const current = data.current;
 
-    // Basic Data
-    document.getElementById('temp').innerText = Math.round(current.temperature_2m);
-    document.getElementById('humidity').innerText = current.relative_humidity_2m;
-    document.getElementById('pressure').innerText = Math.round(current.pressure_msl);
-    document.getElementById('wind-speed').innerText = current.wind_speed_10m;
-
-    // Precipitation Probability
-    // Use the ID 'precip-prob' we created in the HTML above
-    const probElement = document.getElementById('precip-prob');
-    if (probElement) {
-        probElement.innerText = precipProb;
-    }
-
-    // Wind Arrow: Points to where the wind is BLOWING (Vector direction)
-    // We add 180 to flip the source to a destination, then -45 for icon alignment
-    const vectorDir = current.wind_direction_10m + 135; 
-    document.getElementById('wind-dir').style.transform = `rotate(${vectorDir}deg)`;
-
-    // Condition Icons
-    const code = current.weather_code;
+function updateWeatherIcon(code) {
     let iconClass = "fa-sun";
-    if (code >= 51 && code <= 67) iconClass = "fa-cloud-showers-heavy"; 
+    if (code >= 51 && code <= 67) iconClass = "fa-cloud-showers-heavy";
     else if (code >= 71 && code <= 86) iconClass = "fa-snowflake";
     else if (code >= 1 && code <= 3) iconClass = "fa-cloud";
     else if (code >= 95) iconClass = "fa-bolt";
-
     document.getElementById('condition-icon').className = `fa-solid ${iconClass}`;
 }
 
-
-//
-//
-//
-// Random quotes
+// --- Quotes & Background ---
 const quotes = [
-    {
-        text: "If you love life, don't waste time, for time is what life is made up of.",
-        author: "- Bruce Lee"
-    },
-    {
-        text: "Do what you can, with what you have, where you are.",
-        author: "- Theodore Roosevelt"
-    },
-    {
-        text: "Failure is simply the opportunity to begin again, this time more intelligently.",
-        author: "- Henry Ford"
-    },
-    {
-        text: "You will become as small as your controlling desire; as great as you dominant aspiration.",
-        author: "- James Allen, As A Man Thinketh"
-    }
+    { text: "If you love life, don't waste time, for time is what life is made up of.", author: "- Bruce Lee" },
+    { text: "Do what you can, with what you have, where you are.", author: "- Theodore Roosevelt" },
+    { text: "Failure is simply the opportunity to begin again, this time more intelligently.", author: "- Henry Ford" },
+    { text: "You will become as small as your controlling desire; as great as you dominant aspiration.", author: "- James Allen, As a man thinketh" }
 ];
 
 function displayRandomQuote() {
-    // Pick a random index from the array
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    const selectedQuote = quotes[randomIndex];
-
-    // Update the HTML
-    document.getElementById('random-quote').innerText = `"${selectedQuote.text}"`;
-    document.getElementById('quote-author').innerText = selectedQuote.author;
+    const selected = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('random-quote').innerText = `"${selected.text}"`;
+    document.getElementById('quote-author').innerText = selected.author;
 }
 
-// Run the function when the page loads
-window.addEventListener('load', displayRandomQuote);
-
-
-// random cloud images
-// 1. List your cloud images here
-const cloudGallery = [
-    'images/home_pic.jpg',
-    'images/home_pic2.jpg',
-    'images/home_pic3.jpg',
-    'images/home_pic4.jpg'
-];
+const cloudGallery = ['images/home_pic.jpg', 'images/home_pic2.jpg', 'images/home_pic3.jpg', 'images/home_pic4.jpg'];
 
 function applyRandomCloud() {
     const bgLayer = document.querySelector('.background-animation');
-    
-    // Pick a random image from your list
     const randomImg = cloudGallery[Math.floor(Math.random() * cloudGallery.length)];
-
-    // IMPORTANT: We wrap the image in the same gradient from your CSS 
-    // so the text remains readable.
     bgLayer.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('${randomImg}')`;
 }
 
-// 2. Make sure it runs when the page loads alongside your weather/quotes
+
+// --- Single Initialization ---
 window.addEventListener('load', () => {
-    getWeather();
+    initWeather();
     displayRandomQuote();
-    applyRandomCloud(); // Trigger the random background
+    applyRandomCloud();
 });
-
-
-
 </script>
-
 
 
 </body>
