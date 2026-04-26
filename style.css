@@ -148,18 +148,19 @@ body {
 /* */
 /* */
 
+/* --- Restored Original Weather Widget Style --- */
 .weather-widget {
     position: absolute;
     top: 25px;
-    right: 30px;
+    right: 60px;
     display: flex;
     align-items: center;
     gap: 15px;
     
-    background: rgba(20, 20, 20, 0.4); /* Slightly darker for a "pro" look */
+    background: rgba(20, 20, 20, 0.4); 
     backdrop-filter: blur(8px);
     padding: 10px 22px;
-    border-radius: 50px;
+    border-radius: 50px; /* Restored pill shape */
     border: 1px solid rgba(242, 193, 163, 0.2);
     
     color: #F2C1A3;
@@ -187,25 +188,64 @@ body {
 
 #wind-dir {
     display: inline-block;
-    transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth "spring" animation */
+    transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     font-size: 0.7rem;
+    color: #F2C1A3 !important; 
 }
 
 .weather-widget i {
-    /* This color is a blend of peach and soft violet */
     color: #D1A7B9; 
-    
-    /* This adds a tiny 'bloom' effect like dawn light */
     text-shadow: 0 0 8px rgba(209, 167, 185, 0.4); 
-    
     font-size: 0.8rem;
-    transition: color 0.5s ease; /* Smooth transition if the color changes */
+    transition: color 0.5s ease;
 }
 
-/* Make the wind arrow a slightly different tint to show it's "active" */
-#wind-dir {
-    color: #F2C1A3 !important; /* Keep the wind arrow in the stronger peach */
+/* --- Tooltip Logic (Showing BELOW the bar) --- */
+.tooltip-target {
+    cursor: url('images/crystal_white.svg') 16 16, auto !important;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    /* This ensures the hover area is tall enough to bridge the gap */
+    padding-bottom: 15px; 
+    margin-bottom: -15px;
 }
 
+.tooltip-target:hover {
+    /* Swap to pink crystal */
+    cursor: url('images/crystal_pink.svg') 16 16, auto !important;
+}
 
-/* -------------------------------------------------------------- */
+.tooltip-target::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 100%; /* Move it closer to the bar */
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    
+    /* Your existing styles */
+    background: rgba(20, 20, 20, 0.95);
+    color: #F2C1A3;
+    border: 1px solid rgba(209, 167, 185, 0.3);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    width: 210px;
+    text-align: center;
+    
+    /* Crucial: prevents the tooltip from blocking the mouse */
+    pointer-events: none; 
+    
+    /* Smoothness */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.tooltip-target:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(10px); /* Smooth slide down */
+}
+

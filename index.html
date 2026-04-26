@@ -21,19 +21,32 @@
         <span id="location">Rio de Janeiro</span>
     </div>
     
-    <div class="weather-details">
-        <span><i class="fa-solid fa-thermometer-half"></i> <span id="temp"></span>°C</span>
-        <span><i class="fa-solid fa-droplet"></i> <span id="humidity"></span>%</span>
-        <span><i class="fa-solid fa-gauge-high"></i> <span id="pressure"></span> hPa</span>
-        <span>
-            <i id="wind-dir" class="fa-solid fa-location-arrow"></i> 
-            <span id="wind-speed"></span> m/s
-        </span>
-        <span id="precip-status">
-    <i class="fa-solid fa-umbrella"></i> <span id="precip-prob">0</span>%
-</span>
 
-    </div>
+    <div class="weather-details">
+    <span class="tooltip-target" data-tooltip="Temperature (2m)">
+        <i class="fa-solid fa-thermometer-half"></i> <span id="temp"></span>°C
+    </span>
+
+    <span class="tooltip-target" data-tooltip="Relative Humidity">
+        <i class="fa-solid fa-droplet"></i> <span id="humidity"></span>%
+    </span>
+
+    <span class="tooltip-target" data-tooltip="Sea Level Pressure">
+        <i class="fa-solid fa-gauge-high"></i> <span id="pressure"></span> hPa
+    </span>
+
+    <span class="tooltip-target" data-tooltip="Wind Speed & Direction (10m)">
+        <i id="wind-dir" class="fa-solid fa-location-arrow"></i> <span id="wind-speed"></span> m/s
+    </span>
+
+    <span id="precip-status" class="tooltip-target" data-tooltip="Probability of Precipitation">
+        <i class="fa-solid fa-umbrella"></i> <span id="precip-prob">0</span>%
+    </span>
+
+</div>
+
+
+
 </div>
 
 
