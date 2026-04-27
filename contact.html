@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Jessica Souza</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&family=Nunito:wght@300;400&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="contact.css">
+</head>
+<body class="contact-page">
+
+    <div class="atmospheric-glow"></div>
+
+    <nav class="sticky-nav">
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="research.html">Research</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="contact-container">
+        <div class="contact-grid">
+            
+            <div class="contact-photo-area">
+                <div class="photo-wrapper">
+                    <img src="images/profile_header.jpg" alt="Jessica Souza" class="contact-img">
+                    <div class="accent-box"></div> </div>
+            </div>
+
+        <div class="contact-links-area">
+            <h2 class="contact-title">Let's <br><span>Connect</span></h2>
+    
+
+                <ul class="social-list">
+                    <li><a href="https://www.linkedin.com/in/jessicacssouza/" target="_blank">LinkedIn <span class="link-line"></span></a></li>
+                    <li><a href="https://www.researchgate.net/profile/Jessica-Souza-36" target="_blank">Research Gate <span class="link-line"></span></a></li>
+                    <li><a href="https://github.com/cssjessica" target="_blank">GitHub <span class="link-line"></span></a></li>
+                    <li><a href="https://scholar.google.com/citations?user=Fhsyyk0AAAAJ&hl=en" target="_blank">Google Scholar <span class="link-line"></span></a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.sticky-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
+</body>
+</html>
