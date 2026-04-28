@@ -47,7 +47,7 @@
 
 </div>
 
-
+<div id="update-time">Loading sync time...</div>
 
 </div>
 
@@ -123,6 +123,14 @@ async function runWeatherLogic(lat, lon) {
         const tempC = data.current.temperature_2m;
         const unit = isUS ? "°F" : "°C";
         const displayTemp = isUS ? Math.round((tempC * 9/5) + 32) : Math.round(tempC);
+
+        // 1. Get the time from the API response
+        const apiTime = new Date(data.current.time);
+        const formattedTime = apiTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        // 2. Update the UI 
+        document.getElementById('update-time').innerText = `Updated: ${formattedTime}`;
+
 
         // 2. Update UI
         document.getElementById('temp').innerText = displayTemp;
