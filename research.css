@@ -1,0 +1,61 @@
+/* GLOBAL SETTINGS */
+.research-page, .research-page * { margin: 0; padding: 0; box-sizing: border-box; }
+.research-page { background: #F0ECDD; color: #23354D; font-family: 'Nunito', sans-serif; }
+
+/* NAV */
+.sticky-nav { position: fixed; top: 0; width: 100%; padding: 30px 0; background: rgba(240, 236, 221, 0.95); backdrop-filter: blur(10px); z-index: 1000; border-bottom: 1px solid rgba(2, 18, 47, 0.05); }
+.nav-links { display: flex; justify-content: center; list-style: none; gap: 50px; }
+.nav-links a { font-family: 'Montserrat', sans-serif; text-decoration: none; color: #495B7D; font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; opacity: 0.7; }
+.nav-links a.active { opacity: 1; color: #02122F; font-weight: 400; }
+
+/* LAYOUT */
+.research-container { max-width: 1000px; margin: 0 auto; padding: 150px 8% 100px; }
+.section-intro { margin-bottom: 100px; text-align: center; }
+.page-title { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; letter-spacing: 12px; font-weight: 200; text-transform: uppercase; margin-bottom: 20px; }
+.page-title span { color: #8BA3C5; font-weight: 400; }
+.intro-text { font-size: 1.1rem; line-height: 2.2; font-weight: 300; color: #495B7D; max-width: 600px; margin: 0 auto; }
+
+/* BLOCKS */
+.research-block { margin-bottom: 120px; position: relative; }
+.block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.era-tag { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; letter-spacing: 3px; color: #8BA3C5; }
+
+.block-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 30px; font-weight: 300; }
+.block-title span { font-weight: 400; color: #8BA3C5; }
+
+.block-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; align-items: start; }
+.block-text p { font-size: 1.05rem; line-height: 2.4; font-weight: 300; margin-bottom: 20px; }
+.block-text em { font-family: 'Playfair Display', serif; font-style: italic; }
+
+/* VISUALS */
+.data-placeholder { height: 200px; border: 1px solid rgba(139, 163, 197, 0.2); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; letter-spacing: 2px; color: #8BA3C5; text-transform: uppercase; }
+
+/* CONFERENCES */
+.presentation-list { margin-top: 20px; border-top: 1px solid rgba(139, 163, 197, 0.1); padding-top: 20px; }
+.presentation-list h4 { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 2px; color: #8BA3C5; margin-bottom: 10px; text-transform: uppercase; }
+.presentation-list ul { list-style: none; }
+.presentation-list li { font-size: 0.85rem; color: #495B7D; margin-bottom: 5px; }
+
+/* RESEARCH PAGE LINK STYLING */
+/* This targets all links inside the research-container specifically */
+.research-container a {
+    color: #495B7D !important; /* Forces the muted blue from your theme */
+    text-decoration: none !important; /* Removes the default underline */
+    border-bottom: 1px solid rgba(139, 163, 197, 0.4); /* Adds a thin, custom underline */
+    transition: all 0.3s ease;
+}
+
+.research-container a:hover {
+    color: #02122F !important; /* Darkens to your primary navy on hover */
+    border-bottom: 1px solid #02122F;
+    opacity: 1;
+}
+
+/* Visited state to prevent the purple browser default */
+.research-container a:visited {
+    color: #495B7D;
+}
+
+
+/* FOOTER */
+.research-footer { text-align: center; padding: 60px 0; font-size: 0.7rem; color: #495B7D; letter-spacing: 2px; opacity: 0.6; text-transform: uppercase; }
