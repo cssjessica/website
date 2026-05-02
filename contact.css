@@ -172,3 +172,6 @@
     .contact-grid { flex-direction: column; text-align: center; }
     .contact-intro { margin-left: auto; margin-right: auto; }
 }
+
+
+.research-footer { text-align: center; padding: 60px 0; font-size: 0.7rem; color: #495B7D; letter-spacing: 2px; opacity: 0.6; text-transform: uppercase; }
