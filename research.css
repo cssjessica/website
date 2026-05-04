@@ -59,3 +59,28 @@
 
 /* FOOTER */
 .research-footer { text-align: center; padding: 60px 0; font-size: 0.7rem; color: #495B7D; letter-spacing: 2px; opacity: 0.6; text-transform: uppercase; }
+
+/* Styling the clickable Block Titles */
+.block-title a {
+    text-decoration: none;
+    color: inherit; /* Keeps the #23354D dark navy you already have */
+    transition: opacity 0.3s ease;
+    display: inline-block;
+}
+
+.block-title a:hover {
+    opacity: 0.7; /* Subtle fade effect on hover */
+    cursor: pointer;
+}
+
+/* Optional: Add a small arrow or indicator after the title on hover */
+.block-title a:hover::after {
+    content: ' →';
+    color: #8BA3C5; /* Using your signature light steel blue */
+    font-weight: 200;
+}
+
+/* Ensure the span inside the link stays styled correctly */
+.block-title a span {
+    color: #8BA3C5;
+}
